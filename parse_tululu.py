@@ -129,21 +129,12 @@ def main():
     page_url = response.url
     soup = BeautifulSoup(response.text, 'lxml')
 
-    book_link = soup.find(class_='bookimage').find('a').get('href')
-    book_url = urljoin(page_url, book_link)
+    book_link100 = soup.find(class_='bookimage').find('a').get('href')
+    book_cards = soup.find_all(class_='bookimage')
+    for book_card in book_cards:
+        book_link = urljoin(page_url, book_card.find('a').get('href'))
+        print(book_link)
 
-
-
-    print(book_link)
-    print(book_url)
-
-
-
-    '''<td valign="top" class="ow_px_td">
-    <table border="0" cellspacing="0" cellpadding="3" width="100%" class="d_book">
-
-    <div class="bookimage"><a href="/b239/" title="ИВАНОВ Сергей - Алиби"><img src="/shots/239.jpg" 
-    alt="Алиби, читать, скачать txt, zip, jar" width="150" height="200"></a></div>'''
 
 
 
