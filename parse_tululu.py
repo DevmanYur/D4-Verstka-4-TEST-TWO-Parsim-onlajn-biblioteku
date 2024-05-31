@@ -123,7 +123,7 @@ def main():
     #         continue
 
     url_fantasi = 'https://tululu.org/l55/'
-    page = 700
+    page = 701
     while True:
         try:
             url_fantasi_page = f'{url_fantasi}{page}'
@@ -136,8 +136,16 @@ def main():
             for book_card in book_cards:
                 book_link = urljoin(page_url, book_card.find('a').get('href'))
                 print(book_link)
+                response = requests.get(book_link)
+                response.raise_for_status()
+                check_for_redirect(response)
+                page_url = response.url
+                soup2 = BeautifulSoup(response.text, 'lxml')
+                print(parse_book_page(soup2))
+                print()
 
             page = page + 1
+            print(page)
         except requests.exceptions.HTTPError:
             break
 
