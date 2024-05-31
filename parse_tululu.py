@@ -123,17 +123,25 @@ def main():
     #         continue
 
     url_fantasi = 'https://tululu.org/l55/'
-    response = requests.get(url_fantasi)
-    response.raise_for_status()
-    check_for_redirect(response)
-    page_url = response.url
-    soup = BeautifulSoup(response.text, 'lxml')
+    page = 700
+    while True:
+        try:
+            url_fantasi_page = f'{url_fantasi}{page}'
+            response = requests.get(url_fantasi_page)
+            response.raise_for_status()
+            check_for_redirect(response)
+            page_url = response.url
+            soup = BeautifulSoup(response.text, 'lxml')
+            book_cards = soup.find_all(class_='bookimage')
+            for book_card in book_cards:
+                book_link = urljoin(page_url, book_card.find('a').get('href'))
+                print(book_link)
 
-    book_link100 = soup.find(class_='bookimage').find('a').get('href')
-    book_cards = soup.find_all(class_='bookimage')
-    for book_card in book_cards:
-        book_link = urljoin(page_url, book_card.find('a').get('href'))
-        print(book_link)
+            page = page + 1
+        except requests.exceptions.HTTPError:
+            break
+
+
 
 
 
