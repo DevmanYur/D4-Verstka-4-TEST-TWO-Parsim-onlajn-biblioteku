@@ -1,5 +1,7 @@
 import os
 import argparse
+from pprint import pprint
+
 import requests
 from pathlib import Path
 from requests import HTTPError
@@ -99,26 +101,62 @@ def main():
     logger.setLevel(logging.INFO)
 
     url = 'https://tululu.org'
-    start_id, end_id = get_arguments()
+    # start_id, end_id = get_arguments()
 
-    for book_id in range(start_id, end_id + 1):
-        try:
-            response = requests.get(f'{url}/b{book_id}/')
-            response.raise_for_status()
-            check_for_redirect(response)
-            page_url = response.url
-            soup = BeautifulSoup(response.text, 'lxml')
-            book = parse_book_page(soup)
-            download_txt(url, book_id, book['tittle'])
-            download_image(page_url, book['image_link'], book['image_name'])
-            download_comments(book['comments'], book_id, book['tittle'])
-        except HTTPError:
-            logger.warning(f'Страница {url}/b{book_id} не существует')
-            continue
-        except ConnectionError:
-            logger.warning('Потеряно соединение с интернетом')
-            time.sleep(5)
-            continue
+    # for book_id in range(start_id, end_id + 1):
+    #     try:
+    #         response = requests.get(f'{url}/b{book_id}/')
+    #         response.raise_for_status()
+    #         check_for_redirect(response)
+    #         page_url = response.url
+    #         soup = BeautifulSoup(response.text, 'lxml')
+    #         book = parse_book_page(soup)
+    #         download_txt(url, book_id, book['tittle'])
+    #         download_image(page_url, book['image_link'], book['image_name'])
+    #         download_comments(book['comments'], book_id, book['tittle'])
+    #     except HTTPError:
+    #         logger.warning(f'Страница {url}/b{book_id} не существует')
+    #         continue
+    #     except ConnectionError:
+    #         logger.warning('Потеряно соединение с интернетом')
+    #         time.sleep(5)
+    #         continue
+
+    url_fantasi = 'https://tululu.org/l55/'
+    response = requests.get(url_fantasi)
+    response.raise_for_status()
+    check_for_redirect(response)
+    page_url = response.url
+    soup = BeautifulSoup(response.text, 'lxml')
+
+    book_link = soup.find(class_='bookimage').find('a').get('href')
+    book_url = urljoin(page_url, book_link)
+
+
+
+    print(book_link)
+    print(book_url)
+
+
+
+    '''<td valign="top" class="ow_px_td">
+    <table border="0" cellspacing="0" cellpadding="3" width="100%" class="d_book">
+
+    <div class="bookimage"><a href="/b239/" title="ИВАНОВ Сергей - Алиби"><img src="/shots/239.jpg" 
+    alt="Алиби, читать, скачать txt, zip, jar" width="150" height="200"></a></div>'''
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
