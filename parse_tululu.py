@@ -124,9 +124,11 @@ def main():
     #         continue
 
     url_fantasi = 'https://tululu.org/l55/'
-    page = 701
+
     сf = []
-    while True:
+
+    for page in range(1, 2+1):
+        print(page)
         try:
             url_fantasi_page = f'{url_fantasi}{page}'
             response = requests.get(url_fantasi_page)
@@ -136,15 +138,30 @@ def main():
             soup = BeautifulSoup(response.text, 'lxml')
             book_cards = soup.find_all(class_='bookimage')
             for book_card in book_cards:
-                book_link = urljoin(page_url, book_card.find('a').get('href'))
+                link = book_card.find('a').get('href')
+                _, not_sanitized_book_id = link.split('b')
+                book_id = sanitize_filename(not_sanitized_book_id.strip())
+                print(book_id)
+
+                book_link = urljoin(page_url, link)
+
 
 
                 response = requests.get(book_link)
                 response.raise_for_status()
                 check_for_redirect(response)
                 page_url = response.url
-                print(page_url)
+
+
                 soup2 = BeautifulSoup(response.text, 'lxml')
+                book = parse_book_page(soup2)
+
+                download_txt(url, book_id, book['tittle'])
+                download_image(page_url, book['image_link'], book['image_name'])
+                download_comments(book['comments'], book_id, book['tittle'])
+
+
+
 
                 сf.append(parse_book_page(soup2))
 
