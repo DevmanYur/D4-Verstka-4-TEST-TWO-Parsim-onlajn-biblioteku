@@ -1,3 +1,4 @@
+import json
 import os
 import argparse
 from pprint import pprint
@@ -124,6 +125,7 @@ def main():
 
     url_fantasi = 'https://tululu.org/l55/'
     page = 701
+    сf = []
     while True:
         try:
             url_fantasi_page = f'{url_fantasi}{page}'
@@ -135,19 +137,30 @@ def main():
             book_cards = soup.find_all(class_='bookimage')
             for book_card in book_cards:
                 book_link = urljoin(page_url, book_card.find('a').get('href'))
-                print(book_link)
+
+
                 response = requests.get(book_link)
                 response.raise_for_status()
                 check_for_redirect(response)
                 page_url = response.url
+                print(page_url)
                 soup2 = BeautifulSoup(response.text, 'lxml')
-                print(parse_book_page(soup2))
-                print()
+
+                сf.append(parse_book_page(soup2))
 
             page = page + 1
             print(page)
+
+
+
+
         except requests.exceptions.HTTPError:
             break
+
+    with open('filename', 'w', encoding='utf8') as json_file:
+            json.dump(сf, json_file, ensure_ascii=False)
+
+
 
 
 
