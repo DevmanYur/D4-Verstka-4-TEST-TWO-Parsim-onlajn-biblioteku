@@ -90,8 +90,8 @@ def get_arguments():
     parser = argparse.ArgumentParser(
         description='Скачивание заданных страниц'
     )
-    parser.add_argument('start_id', help='Страница с', type=int)
-    parser.add_argument('end_id', help='Страница по', type=int)
+    parser.add_argument('--start_id', help='Страница с', type=int)
+    parser.add_argument('--end_id', help='Страница по', type=int)
     args = parser.parse_args()
 
     return args.start_id, args.end_id
@@ -102,7 +102,12 @@ def main():
     logger.setLevel(logging.INFO)
 
     url = 'https://tululu.org'
-    # start_id, end_id = get_arguments()
+
+
+
+    start_id, end_id = get_arguments()
+    print(start_id)
+    print(end_id)
 
     # for book_id in range(start_id, end_id + 1):
     #     try:
@@ -123,63 +128,63 @@ def main():
     #         time.sleep(5)
     #         continue
 
-    url_fantasi = 'https://tululu.org/l55/'
+    # url_fantasi = 'https://tululu.org/l55/'
+    #
+    # сf = []
 
-    сf = []
+    # for page in range(1, 2+1):
+    #     print(page)
+    #     try:
+    #         url_fantasi_page = f'{url_fantasi}{page}'
+    #         response = requests.get(url_fantasi_page)
+    #         response.raise_for_status()
+    #         check_for_redirect(response)
+    #         page_url = response.url
+    #         soup = BeautifulSoup(response.text, 'lxml')
+    #         # book_cards = soup.find_all(class_='bookimage')
+    #
+    #         book_cards_selector = '.bookimage a[href^="/b"]'
+    #         book_cards = soup.select(book_cards_selector)
+    #         for book_card in book_cards:
+    #
+    #             link = book_card.get('href')
+    #
+    #             _, not_sanitized_book_id = link.split('b')
+    #             book_id = sanitize_filename(not_sanitized_book_id.strip())
+    #             print(book_id)
+    #
+    #             book_link = urljoin(page_url, link)
+    #
+    #
+    #             response = requests.get(book_link)
+    #             response.raise_for_status()
+    #             check_for_redirect(response)
+    #             page_url = response.url
+    #
+    #
+    #             soup2 = BeautifulSoup(response.text, 'lxml')
+    #             book = parse_book_page(soup2)
+    #
+    #             download_txt(url, book_id, book['tittle'])
+    #             download_image(page_url, book['image_link'], book['image_name'])
+    #             download_comments(book['comments'], book_id, book['tittle'])
+    #
+    #
+    #
+    #
+    #             сf.append(parse_book_page(soup2))
+    #
+    #         page = page + 1
+    #         print(page)
+    #
+    #
+    #
+    #
+    #     except requests.exceptions.HTTPError:
+    #         break
 
-    for page in range(1, 2+1):
-        print(page)
-        try:
-            url_fantasi_page = f'{url_fantasi}{page}'
-            response = requests.get(url_fantasi_page)
-            response.raise_for_status()
-            check_for_redirect(response)
-            page_url = response.url
-            soup = BeautifulSoup(response.text, 'lxml')
-            # book_cards = soup.find_all(class_='bookimage')
-
-            book_cards_selector = '.bookimage a[href^="/b"]'
-            book_cards = soup.select(book_cards_selector)
-            for book_card in book_cards:
-
-                link = book_card.get('href')
-
-                _, not_sanitized_book_id = link.split('b')
-                book_id = sanitize_filename(not_sanitized_book_id.strip())
-                print(book_id)
-
-                book_link = urljoin(page_url, link)
-
-
-                response = requests.get(book_link)
-                response.raise_for_status()
-                check_for_redirect(response)
-                page_url = response.url
-
-
-                soup2 = BeautifulSoup(response.text, 'lxml')
-                book = parse_book_page(soup2)
-
-                download_txt(url, book_id, book['tittle'])
-                download_image(page_url, book['image_link'], book['image_name'])
-                download_comments(book['comments'], book_id, book['tittle'])
-
-
-
-
-                сf.append(parse_book_page(soup2))
-
-            page = page + 1
-            print(page)
-
-
-
-
-        except requests.exceptions.HTTPError:
-            break
-
-    with open('filename', 'w', encoding='utf8') as json_file:
-            json.dump(сf, json_file, ensure_ascii=False)
+    # with open('filename', 'w', encoding='utf8') as json_file:
+    #         json.dump(сf, json_file, ensure_ascii=False)
 
 
 
