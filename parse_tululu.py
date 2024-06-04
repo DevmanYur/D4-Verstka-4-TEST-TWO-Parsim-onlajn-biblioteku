@@ -90,11 +90,14 @@ def get_arguments():
     parser = argparse.ArgumentParser(
         description='Скачивание заданных страниц'
     )
-    parser.add_argument('--start_id', help='Страница с', type=int)
-    parser.add_argument('--end_id', help='Страница по', type=int)
+    parser.add_argument('--start_page', help='Страница с', type=int)
+    parser.add_argument('--end_page', help='Страница по', type=int)
+
     args = parser.parse_args()
 
-    return args.start_id, args.end_id
+    'python parse_tululu_category.py --start_page 700 --end_page 701'
+
+    return args.start_page, args.end_page
 
 
 def main():
