@@ -90,14 +90,14 @@ def get_arguments():
     parser = argparse.ArgumentParser(
         description='Скачивание заданных страниц'
     )
-    parser.add_argument('--start_id', help='Страница с', type=int)
-    parser.add_argument('--end_id', help='Страница по', type=int)
+    parser.add_argument('--start_page', help='Страница с', type=int)
+    parser.add_argument('--end_page', help='Страница по', type=int)
 
     args = parser.parse_args()
 
     # 'python parse_tululu_category.py --start_page 700 --end_page 701'
 
-    return args.start_id, args.end_id
+    return args.start_page, args.end_page
 
 
 def main():
@@ -108,18 +108,18 @@ def main():
 
 
 
-    start_id, end_id = get_arguments()
+    start_page, end_page = get_arguments()
 
-    if end_id:
+    if end_page:
         print("Есть оба")
-        for page_id in range(start_id, end_id + 1):
+        for page_id in range(start_page, end_page + 1):
             print()
     else:
         url_fantasi = 'https://tululu.org/l55/'
         print("Один")
         while True:
             try:
-                url_fantasi_page = f'{url_fantasi}{start_id}'
+                url_fantasi_page = f'{url_fantasi}{start_page}'
                 response = requests.get(url_fantasi_page)
                 response.raise_for_status()
                 check_for_redirect(response)
@@ -137,7 +137,7 @@ def main():
                     _, not_sanitized_book_id = link.split('b')
                     book_id = sanitize_filename(not_sanitized_book_id.strip())
                     print(book_id)
-                start_id += 1
+                start_page += 1
             except HTTPError:
                 break
 
