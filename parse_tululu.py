@@ -109,8 +109,29 @@ def main():
 
 
     start_id, end_id = get_arguments()
-    print(start_id)
-    print(end_id)
+
+    if end_id:
+        print("Есть оба")
+        for book_id in range(start_id, end_id + 1):
+            print(book_id)
+    else:
+        url_fantasi = 'https://tululu.org/l55/'
+        print("Один")
+        while True:
+            try:
+                url_fantasi_page = f'{url_fantasi}{start_id}'
+                response = requests.get(url_fantasi_page)
+                response.raise_for_status()
+                check_for_redirect(response)
+                page_url = response.url
+                print(start_id)
+                start_id += 1
+            except HTTPError:
+                break
+
+
+
+
 
     # for book_id in range(start_id, end_id + 1):
     #     try:
