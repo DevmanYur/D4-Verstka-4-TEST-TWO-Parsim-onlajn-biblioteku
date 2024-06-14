@@ -112,8 +112,8 @@ def main():
 
     if end_id:
         print("Есть оба")
-        for book_id in range(start_id, end_id + 1):
-            print(book_id)
+        for page_id in range(start_id, end_id + 1):
+            print()
     else:
         url_fantasi = 'https://tululu.org/l55/'
         print("Один")
@@ -124,7 +124,19 @@ def main():
                 response.raise_for_status()
                 check_for_redirect(response)
                 page_url = response.url
-                print(start_id)
+                print(page_url)
+
+
+                soup = BeautifulSoup(response.text, 'lxml')
+                         # book_cards = soup.find_all(class_='bookimage')
+
+                book_cards_selector = '.bookimage a[href^="/b"]'
+                book_cards = soup.select(book_cards_selector)
+                for book_card in book_cards:
+                    link = book_card.get('href')
+                    _, not_sanitized_book_id = link.split('b')
+                    book_id = sanitize_filename(not_sanitized_book_id.strip())
+                    print(book_id)
                 start_id += 1
             except HTTPError:
                 break
