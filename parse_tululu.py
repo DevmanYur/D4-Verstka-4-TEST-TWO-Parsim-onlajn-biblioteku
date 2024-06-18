@@ -100,6 +100,44 @@ def get_arguments():
     return args.start_page, args.end_page
 
 
+
+def f1(url_fantasi , page ):
+    url_fantasi_page = f'{url_fantasi}{page}'
+    response = requests.get(url_fantasi_page)
+    response.raise_for_status()
+    check_for_redirect(response)
+    page_url = response.url
+    print(page_url)
+
+    soup = BeautifulSoup(response.text, 'lxml')
+
+    book_cards_selector = '.bookimage a[href^="/b"]'
+    book_cards = soup.select(book_cards_selector)
+    for book_card in book_cards:
+        link = book_card.get('href')
+
+        _, not_sanitized_book_id = link.split('b')
+        book_id = sanitize_filename(not_sanitized_book_id.strip())
+
+
+        book_link = urljoin(page_url, link)
+
+        response = requests.get(book_link)
+        response.raise_for_status()
+        check_for_redirect(response)
+        page_url = response.url
+
+        soup2 = BeautifulSoup(response.text, 'lxml')
+        book = parse_book_page(soup2)
+        print(page_url)
+        print(book_id)
+        print(book['tittle'])
+        print()
+
+        download_txt(page_url, book_id, book['tittle'])
+        # download_image(page_url, book['image_link'], book['image_name'])
+        # download_comments(book['comments'], book_id, book['tittle'])
+
 def main():
     logging.basicConfig(level=logging.INFO)
     logger.setLevel(logging.INFO)
@@ -110,35 +148,22 @@ def main():
 
     start_page, end_page = get_arguments()
 
+    url_fantasi = 'https://tululu.org/l55/'
+
     if end_page:
-        print("Есть оба")
-        for page_id in range(start_page, end_page + 1):
-            print()
+        for page in range(start_page, end_page + 1):
+            try:
+                f1(url_fantasi, page)
+            except HTTPError:
+                print("Сеть1")
+                break
     else:
-        url_fantasi = 'https://tululu.org/l55/'
-        print("Один")
         while True:
             try:
-                url_fantasi_page = f'{url_fantasi}{start_page}'
-                response = requests.get(url_fantasi_page)
-                response.raise_for_status()
-                check_for_redirect(response)
-                page_url = response.url
-                print(page_url)
-
-
-                soup = BeautifulSoup(response.text, 'lxml')
-                         # book_cards = soup.find_all(class_='bookimage')
-
-                book_cards_selector = '.bookimage a[href^="/b"]'
-                book_cards = soup.select(book_cards_selector)
-                for book_card in book_cards:
-                    link = book_card.get('href')
-                    _, not_sanitized_book_id = link.split('b')
-                    book_id = sanitize_filename(not_sanitized_book_id.strip())
-                    print(book_id)
+                f1(url_fantasi, start_page)
                 start_page += 1
             except HTTPError:
+                print('Сеть2')
                 break
 
 
